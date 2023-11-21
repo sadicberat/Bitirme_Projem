@@ -7,10 +7,8 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.bitirme_projem2.LoginActivity
-import com.example.bitirme_projem2.MainActivity
-import com.example.bitirme_projem2.R
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase.getInstance
 
 class SignUpActivity : AppCompatActivity() {
 
@@ -23,7 +21,7 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_signup)
 
-        userName = findViewById(R.id.signUp_name)
+        userName = findViewById(R.id.signUp_mail)
         userPassword = findViewById(R.id.signUp_password)
         register = findViewById(R.id.button_signUp)
 
@@ -36,6 +34,7 @@ class SignUpActivity : AppCompatActivity() {
             onRegisterButtonClick(it)
 
 
+
         }
 
 
@@ -44,6 +43,7 @@ class SignUpActivity : AppCompatActivity() {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
+       getInstance().reference.child("ilk child").child("ikinci child").setValue("set value")
     }
     private fun onRegisterButtonClick(view: View) {
         val email = userName.text.toString()

@@ -1,4 +1,4 @@
-package com.example.bitirme_projem2
+package com.example.bitirme_projem2.ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.bitirme_projem2.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase.getInstance
 
@@ -27,8 +28,8 @@ class SignUpActivity : AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance()
 
-        val name = userName.text.toString()
-        val password = userPassword.text.toString()
+        var name = userName.text.toString().trim()
+        var password = userPassword.text.toString().trim()
 
         register.setOnClickListener {
             onRegisterButtonClick(it)
@@ -36,6 +37,17 @@ class SignUpActivity : AppCompatActivity() {
 
 
         }
+         fun onActivityCreated(savedInstanceState: Bundle?){
+
+            onActivityCreated(savedInstanceState)
+
+            register.setOnClickListener{
+                if (name.isEmpty()){
+                   // = getString(R.string.error_field_required)
+                }
+            }
+        }
+
 
 
         val buttonGeriSignUp: Button = findViewById(R.id.button_geri_signUp)

@@ -1,9 +1,10 @@
-package com.example.bitirme_projem2
+package com.example.bitirme_projem2.ui
 
 
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.example.bitirme_projem2.R
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.AuthUI.IdpConfig
 import com.firebase.ui.auth.AuthUI.IdpConfig.EmailBuilder

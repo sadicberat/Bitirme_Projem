@@ -1,9 +1,10 @@
-package com.example.bitirme_projem2
+package com.example.bitirme_projem2.ui
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import com.example.bitirme_projem2.R
 
 class MainActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

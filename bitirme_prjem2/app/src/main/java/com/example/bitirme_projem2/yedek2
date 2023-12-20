@@ -1,97 +1,73 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.example.bitirme_projem2.R
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/guideline2"
-        app:layout_constraintVertical_bias="0.0">
+class SignUpActivity : AppCompatActivity() {
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+    private lateinit var auth: FirebaseAuth
+    private lateinit var database: FirebaseDatabase
 
-            <Button
-                android:id="@+id/button_signUp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="268dp"
-                android:text="üye ol"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/signUp_name"
-                app:layout_constraintVertical_bias="1.0" />
+    private lateinit var editTextName: EditText
+    private lateinit var editTextLastName: EditText
+    private lateinit var editTextEmail: EditText
+    private lateinit var editTextPassword: EditText
+    private lateinit var buttonSignUp: Button
 
-            <EditText
-                android:id="@+id/signUp_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="isim"
-                android:inputType="text"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.497"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.086" />
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.layout_signup)
 
-            <EditText
-                android:id="@+id/signUp_password"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:contextClickable="false"
-                android:ems="10"
-                android:hint="şifre"
-                android:inputType="textPassword"
-                android:visibility="visible"
-                app:layout_constraintBottom_toTopOf="@+id/button_signUp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.497"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/signUp_name"
-                app:layout_constraintVertical_bias="0.0" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        auth = FirebaseAuth.getInstance()
+        database = FirebaseDatabase.getInstance()
 
-    </androidx.cardview.widget.CardView>
+        editTextName = findViewById(R.id.signUp_name)
+        editTextLastName = findViewById(R.id.signUp_secondName)
+        editTextEmail = findViewById(R.id.signUp_mail)
+        editTextPassword = findViewById(R.id.signUp_password)
+        buttonSignUp = findViewById(R.id.button_signUp)
 
-    <Button
-        android:id="@+id/button_geri_signUp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="297dp"
-        android:layout_marginBottom="199dp"
-        android:text="geri dön"
-        app:layout_constraintBottom_toTopOf="@+id/cardView2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        buttonSignUp.setOnClickListener {
+            val name = editTextName.text.toString().trim()
+            val lastName = editTextLastName.text.toString().trim()
+            val email = editTextEmail.text.toString().trim()
+            val password = editTextPassword.text.toString().trim()
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="257dp"
-        android:layout_marginEnd="411dp"
-        android:layout_marginBottom="474dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintGuide_end="475dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+            if (name.isNotEmpty() && lastName.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()) {
+                registerUserAndSaveData(email, password, name, lastName)
+            } else {
+                Toast.makeText(this, "Tüm alanları doldurun", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    private fun registerUserAndSaveData(email: String, password: String, name: String, lastName: String) {
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    val user = auth.currentUser
+                    saveUserData(user?.uid, name, lastName, email)
+
+                    Toast.makeText(this, "Kayıt başarıyla tamamlandı", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Kayıt başarısız. Hata: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
+
+    private fun saveUserData(userId: String?, name: String, lastName: String, email: String) {
+        val userData = mapOf(
+            "name" to name,
+            "lastName" to lastName,
+            "email" to email
+        )
+
+        userId?.let {
+            database.reference.child("users").child(it).setValue(userData)
+        }
+    }
+}

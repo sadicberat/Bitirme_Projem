@@ -39,6 +39,8 @@ class SignUpActivity : AppCompatActivity() {
 
         userName = findViewById(R.id.signUp_name)
         userLastName = findViewById(R.id.signUp_secondName)
+        //val userLastName = findViewById<TextView>(R.id.signUp_secondName)
+
         userMail = findViewById(R.id.signUp_mail)
         userPassword = findViewById(R.id.signUp_password)
         register = findViewById(R.id.button_signUp)
@@ -79,38 +81,40 @@ class SignUpActivity : AppCompatActivity() {
         val name = userName.text.toString()
         val lastName = userLastName.text.toString()
 
-        signUp(email, password)
+
         val user = FirebaseAuth.getInstance().currentUser
         val uid = user?.uid
 
-        saveUserData()
+        signUp(email, password)
+
+
+
     }
+
     private fun saveUserData() {
-        // Burada kullanıcı verilerini Firebase Realtime Database veya Firestore gibi bir veritabanına kaydedebilirsiniz
-        // Kullanıcı verileri nasıl saklanacaksa, bu işlevi ona göre özelleştirmelisiniz
-        // Örnek olarak, Firebase Realtime Database kullanımı:
         val user = auth.currentUser
         val userId = user?.uid
         if (userId != null) {
-
-            val name = userName
-            val lastName = userLastName
-
             val userData = mapOf(
-                "displayName" to user.displayName,  // Eğer kullanıcı adını alabiliyorsanız
+               // "name" to userName.text.toString(), // Burada kullanıcı adını almalısınız
+                "Uıd" to user.uid,
                 "email" to user.email,
-
-               // "additionalData" to userName
-              //"name" to user.userName,
-             //"lastName" to userLastName
+                "lastName" to userLastName.text.toString(),
+                "name" to userName.text.toString()
                 // Diğer kullanıcı verilerini ekleyebilirsiniz
             )
             val database = FirebaseDatabase.getInstance()
-            database.reference.child("users").child(userId).setValue(userData)
-           // database.reference.child("users").child(userId).setValue(userName)
+            //database.reference.child("users").child(userId).setValue(userData)
+            userId.let {
+                //database.reference.child("users").child(it).setValue(userData)
+                database.reference.child("users").child(userId).setValue(userData)
+            }
         }
     }
-   /* private fun saveUserData(userId: String?, displayName: String, additionalData: String) {
+
+
+
+    /* private fun saveUserData(userId: String?, displayName: String, additionalData: String) {
         val userData = mapOf(
             "displayName" to displayName,
             "additionalData" to additionalData
@@ -128,11 +132,11 @@ class SignUpActivity : AppCompatActivity() {
                     // Giriş başarılıysa yapılacak işlemler
                     Toast.makeText(this, "kayıt oluşturuldu giriş yapılıyor", Toast.LENGTH_SHORT).show()
 
-                    val userlastName = R.id.signUp_secondName
-                    val user = auth.currentUser
+                    //val userLastName = R.id.signUp_secondName
+                    //val user = auth.currentUser
+
+
                     saveUserData()
-
-
                     startMainActivity()
                 } else {
                     // Giriş başarısızsa kullanıcıya uyarı ver

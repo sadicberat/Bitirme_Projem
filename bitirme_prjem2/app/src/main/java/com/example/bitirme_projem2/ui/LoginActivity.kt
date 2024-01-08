@@ -32,6 +32,11 @@ class LoginActivity : AppCompatActivity() {
         username = findViewById(R.id.user_name)
         password = findViewById(R.id.user_password)
 
+        // Oturum açıkken MainActivity'e yönlendir
+        if (auth.currentUser != null) {
+            startMainActivity()
+        }
+
         register.setOnClickListener {
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)

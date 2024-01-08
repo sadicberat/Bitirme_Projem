@@ -2,4 +2,13 @@
     <string name="app_name">Berat_181220014</string>
 
     <string name="error_field_required">Bu alan boş bırakılamaz</string>
+
+
+        <string-array name="course_options">
+            <item>Matematik</item>
+            <item>Fizik</item>
+            <item>Kimya</item>
+            <item>Biyoloji</item>
+            <item>Tarih</item>
+        </string-array>
 </resources>

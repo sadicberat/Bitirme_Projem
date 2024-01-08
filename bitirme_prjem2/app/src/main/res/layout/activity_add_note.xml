@@ -22,13 +22,16 @@
         android:layout_below="@+id/textViewTitle"
         android:layout_marginTop="8dp" />
 
-    <EditText
-        android:id="@+id/editTextCourse"
+    <Spinner
+        android:id="@+id/spinnerCourse"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Ders Adı"
         android:layout_below="@+id/editTextStudentName"
-        android:layout_marginTop="8dp" />
+        android:layout_marginTop="8dp"
+        android:entries="@array/course_options"/>
+
+
 
     <EditText
         android:id="@+id/editTextGrade"
@@ -36,7 +39,7 @@
         android:layout_height="wrap_content"
         android:hint="Not"
         android:inputType="numberDecimal"
-        android:layout_below="@+id/editTextCourse"
+        android:layout_below="@+id/spinnerCourse"
         android:layout_marginTop="8dp" />
 
     <EditText
@@ -87,12 +90,12 @@
         </TableRow>
         <!-- Örnek bir not satırı -->
         <TableRow
-            android:tag="Türkçe"
-            android:id="@+id/Türkçe">
+            android:tag="Matematik"
+            android:id="@+id/Matematik">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Türkçe"
+                android:text="Matematik"
                 android:padding="8dp"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -107,6 +110,65 @@
         </TableRow>
 
         <!-- Örnek bir not satırı -->
+        <TableRow
+            android:tag="Fizik"
+            android:id="@+id/Fizik">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fizik"
+                android:padding="8dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="90"
+                android:padding="8dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Çalışkan öğrenci"
+                android:padding="8dp"/>
+        </TableRow>
+
+        <!-- Örnek bir not satırı -->
+        <TableRow
+            android:tag="Kimya"
+            android:id="@+id/Kimya">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="kimya"
+                android:padding="8dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="90"
+                android:padding="8dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Çalışkan öğrenci"
+                android:padding="8dp"/>
+        </TableRow>
+        <TableRow
+            android:tag="Biyoloji"
+            android:id="@+id/Biyoloji">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Biyoloji"
+                android:padding="8dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="90"
+                android:padding="8dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Çalışkan öğrenci"
+                android:padding="8dp"/>
+        </TableRow>
         <TableRow
             android:tag="Tarih"
             android:id="@+id/Tarih">
@@ -114,46 +176,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tarih"
-                android:padding="8dp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="90"
-                android:padding="8dp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Çalışkan öğrenci"
-                android:padding="8dp"/>
-        </TableRow>
-
-        <!-- Örnek bir not satırı -->
-        <TableRow
-            android:tag="Fen"
-            android:id="@+id/Fen">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Fen"
-                android:padding="8dp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="90"
-                android:padding="8dp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Çalışkan öğrenci"
-                android:padding="8dp"/>
-        </TableRow>
-        <TableRow
-            android:tag="Matematik"
-            android:id="@+id/Matematik">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Matematik"
                 android:padding="8dp"/>
             <TextView
                 android:layout_width="wrap_content"

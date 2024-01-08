@@ -1,0 +1,97 @@
+    private fun addOrUpdateNoteForCourse(studentName: String, courseName: String, grade: String, extraInfo: String) {
+        val auth = FirebaseAuth.getInstance()
+        val db = FirebaseFirestore.getInstance()
+        val user = auth.currentUser
+
+        if (user != null) {
+            val selectedTableRowId = resources.getIdentifier("ders$courseName", "id", packageName)
+            val selectedTableRow = findViewById<TableRow>(selectedTableRowId)
+
+            // Yeni verileri alın
+            val course = findViewById<EditText>(R.id.editTextCourse).text.toString()
+
+            // Ders daha önce kaydedilmiş mi kontrol et
+            if (selectedTableRow != null) {
+                // Ders zaten kaydedilmiş, satırı güncelle
+                val gradeTextView = selectedTableRow.getChildAt(1) as TextView
+                val extraInfoTextView = selectedTableRow.getChildAt(2) as TextView
+
+                gradeTextView.text = grade
+                extraInfoTextView.text = extraInfo
+
+                // Firestore'da da güncelleme yap
+                //updateNoteInFirestore(courseName, user.uid, grade, extraInfo)
+                updateRow(selectedTableRow,course,grade,extraInfo)
+            }
+           else {
+                // Ders daha önce kaydedilmemiş, yeni bir satır ekle
+                addNoteToFirestore(studentName, courseName, user.uid, grade, extraInfo)
+                addNewRow()
+                Toast.makeText(this, "satır eklendi", Toast.LENGTH_SHORT).show()
+            }
+
+
+
+            // Mevcut TableRow'u güncellemek için updateRow fonksiyonunu çağırın
+            //val existingRow = findViewById<TableRow>(selectedTableRowId) // Örnek olarak "dersMat" TableRow ID'sini kullanıyoruz
+            //updateRow(existingRow, course, grade, extraInfo)
+        }
+    }
+
+
+
+private fun addNewRow() {
+    val course = findViewById<EditText>(R.id.editTextCourse).text.toString()
+    val grade = findViewById<EditText>(R.id.editTextGrade).text.toString()
+    val extraInfo = findViewById<EditText>(R.id.editTextExtraInfo).text.toString()
+
+    // Yeni notları içeren bir TableRow oluştur
+    val newRow = TableRow(this)
+
+    // Ders adını gösteren TextView
+    val courseTextView = createTextView(course)
+    newRow.addView(courseTextView)
+
+    // Notu gösteren TextView
+    val gradeTextView = createTextView(grade)
+    newRow.addView(gradeTextView)
+
+    // Ekstra bilgiyi gösteren TextView
+    val extraInfoTextView = createTextView(extraInfo)
+    newRow.addView(extraInfoTextView)
+
+    // TableRow'u TableLayout'a ekle
+    tableLayoutNotes.addView(newRow)
+}
+
+private fun createTextView(text: String): TextView {
+    val textView = TextView(this)
+    textView.text = text.takeIf { it.isNotBlank() } ?: "N/A"
+    textView.setPadding(8, 8, 8, 8)
+    return textView
+}
+
+private fun updateRow(existingRow: TableRow, course: String, grade: String, extraInfo: String) {
+    // Ders adını gösteren TextView
+    val courseTextView = getOrCreateTextView(existingRow, 0, course)
+    //courseTextView.text = course
+
+    // Notu gösteren TextView
+    val gradeTextView = getOrCreateTextView(existingRow, 1, grade)
+    //gradeTextView.text = grade
+
+    // Ekstra bilgiyi gösteren TextView
+    val extraInfoTextView = getOrCreateTextView(existingRow, 2, extraInfo)
+    //extraInfoTextView.text = extraInfo
+}
+
+private fun getOrCreateTextView(existingRow: TableRow, index: Int, text: String): TextView {
+    val textView: TextView
+    if (existingRow.childCount > index && existingRow.getChildAt(index) is TextView) {
+        textView = existingRow.getChildAt(index) as TextView
+    } else {
+        textView = createTextView(text)
+        existingRow.addView(textView)
+    }
+    return textView
+}

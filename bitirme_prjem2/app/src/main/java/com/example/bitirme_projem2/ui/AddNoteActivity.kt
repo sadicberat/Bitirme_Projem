@@ -5,8 +5,11 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.AdapterView
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Spinner
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
@@ -22,6 +25,7 @@ class AddNoteActivity : AppCompatActivity() {
     private lateinit var db: FirebaseFirestore
     private lateinit var tableLayoutNotes: TableLayout
     private lateinit var buttonSaveNote: Button
+    private var selectedCourse: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +35,7 @@ class AddNoteActivity : AppCompatActivity() {
         db = FirebaseFirestore.getInstance()
 
         val editTextStudentName = findViewById<EditText>(R.id.editTextStudentName)
-        val editTextCourse = findViewById<EditText>(R.id.editTextCourse)
+        val editTextCourse = findViewById<Spinner>(R.id.spinnerCourse)
         val editTextGrade = findViewById<EditText>(R.id.editTextGrade)
         val editTextExtraInfo = findViewById<EditText>(R.id.editTextExtraInfo)
         val buttonSaveNote = findViewById<Button>(R.id.buttonSaveNote)
@@ -43,11 +47,13 @@ class AddNoteActivity : AppCompatActivity() {
             //addNewRow()
             addOrUpdateNoteForCourse(
                 editTextStudentName.text.toString(),
-                editTextCourse.text.toString(),
+                editTextCourse.toString(),
                 editTextGrade.text.toString(),
                 editTextExtraInfo.text.toString())
         }
+        initSpinner()
         checkAndAddExistingRows()
+
     }
 
     private fun checkAndAddExistingRows() {
@@ -78,33 +84,72 @@ class AddNoteActivity : AppCompatActivity() {
         }
     }
 
+    private fun initSpinner() {
+        val spinnerCourse = findViewById<Spinner>(R.id.spinnerCourse)
+
+        // Spinner'a statik verileri eklemek için bir ArrayAdapter kullanabilirsin
+        //val courses = arrayOf("Ders 1", "Ders 2", "Ders 3") // Değiştirilecek ders adlarını buraya ekleyebilirsin
+        //val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, courses)
+        //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        //spinnerCourse.adapter = adapter
+
+        // Kullanıcının seçimini dinlemek için bir OnItemSelectedListener ekleyebilirsin
+        spinnerCourse.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                // Seçilen dersi değişkene ata
+                selectedCourse = parent?.getItemAtPosition(position).toString()
+                // Diğer işlemleri yapabilirsin
+                // Toast.makeText(this@AddNoteActivity, "Seçilen Ders: $selectedCourse", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // Kullanıcı hiçbir şey seçmezse bu kısım çalışır
+            }
+        }
+    }
 
     private fun addOrUpdateNoteForCourse(studentName: String, courseName: String, grade: String, extraInfo: String) {
         val auth = FirebaseAuth.getInstance()
         val db = FirebaseFirestore.getInstance()
         val user = auth.currentUser
+        val spinnerCourse = findViewById<Spinner>(R.id.spinnerCourse)
+
+        spinnerCourse.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                // Seçilen dersi değişkene ata
+                selectedCourse = parent?.getItemAtPosition(position).toString()
+                // Diğer işlemleri yapabilirsin
+                // Toast.makeText(this@AddNoteActivity, "Seçilen Ders: $selectedCourse", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // Kullanıcı hiçbir şey seçmezse bu kısım çalışır
+            }
+        }
+
+
 
         if (user != null) {
-            val selectedTableRowId = resources.getIdentifier(courseName, "id", packageName)
+            val selectedTableRowId = resources.getIdentifier(selectedCourse, "id", packageName)
             val selectedTableRow = findViewById<TableRow>(selectedTableRowId)
 
             if (selectedTableRow != null) {
                 // Ders adı değişti mi kontrol et
-                if (selectedTableRow.tag != courseName) {
+                if (selectedTableRow.tag != selectedCourse) {
                     // Ders adı değişti, yeni satır ekle
-                    //addNoteToFirestore(studentName, courseName, user.uid, grade, extraInfo)
-                    addOrUpdateNote(studentName, courseName, user.uid, grade, extraInfo)
-                    addNewRow(courseName,grade, extraInfo)
+                    //addNoteToFirestore(studentName, selectedCourse, user.uid, grade, extraInfo)
+                    addOrUpdateNote(studentName, selectedCourse, user.uid, grade, extraInfo)
+                    addNewRow(selectedCourse,grade, extraInfo)
                     Toast.makeText(this, "Yeni satır eklendi", Toast.LENGTH_SHORT).show()
                 } else {
                     // Ders daha önce kaydedilmiş, satırı güncelle
                     val gradeTextView = getOrCreateTextView(selectedTableRow, 1, grade)
                     val extraInfoTextView = getOrCreateTextView(selectedTableRow, 2, extraInfo)
                     // Güncelleme yap
-                    updateRow(selectedTableRow, courseName, grade, extraInfo)
+                    updateRow(selectedTableRow, selectedCourse, grade, extraInfo)
                     // Firestore'da da güncelleme yap
-                    //updateNoteInFirestore(courseName, user.uid, grade, extraInfo)
-                    addOrUpdateNote(studentName, courseName, user.uid, grade, extraInfo)
+                    //updateNoteInFirestore(selectedCourse, user.uid, grade, extraInfo)
+                    addOrUpdateNote(studentName, selectedCourse, user.uid, grade, extraInfo)
                 }
             } else {
                 // Ders adıyla uyumlu TableRow bulunamadı

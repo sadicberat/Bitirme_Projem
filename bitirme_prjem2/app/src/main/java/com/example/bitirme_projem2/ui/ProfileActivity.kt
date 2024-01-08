@@ -52,8 +52,9 @@ class ProfileActivity : AppCompatActivity() {
         // Menü öğelerine tıklama olaylarını ele al
 
         when (item.itemId) {
-            R.id.item_1 -> {
-                // item_1'e tıklandığında yapılacak işlemler
+            R.id.back -> {
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
                 return true
             }
             R.id.profile_menu_botton -> {
@@ -63,8 +64,9 @@ class ProfileActivity : AppCompatActivity() {
 
                 return true
             }
-            R.id.item_3 -> {
-                // item_3'e tıklandığında yapılacak işlemler
+            R.id.addNote -> {
+                val intent = Intent(this, AddNoteActivity::class.java)
+                startActivity(intent)
                 return true
             }
             R.id.subitem1 -> {
